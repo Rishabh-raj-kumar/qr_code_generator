@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Qr_code</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            display: grid;
+            place-items: center;
+            position: relative;
+        }
+
+        header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 10vh;
+            border-bottom: 2px solid black;
+            display: grid;
+            place-items: center;
+            font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+        }
+
+        header h1 {
+            padding: .5rem;
+            border-left: 2px solid black;
+            border-right: 2px solid black;
+            border-top: 2px solid black;
+        }
+
+        #output {
+            padding: 3rem;
+            border: 1px solid black;
+            position: relative;
+            box-shadow: 0px 10px rgba(0, 0, 0, 1),
+                0px 20px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .same--line {
+            margin: 1rem;
+            display: flex;
+            gap: 2rem;
+        }
+
+        .inp_field {
+            width: 300px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+            border: 1px solid black;
+            border-radius: 5px;
+            box-shadow: 10px 10px rgba(0, 0, 0, 1);
+        }
+
+        input {
+            width: 90%;
+            padding: 10px 15px;
+            outline: none;
+        }
+
+        .lab {
+            margin-inline: 1rem;
+        }
+
+        label {
+            font-size: 20px;
+            font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+        }
+
+        button {
+            padding: 10px 15px;
+            background: black;
+            letter-spacing: 1px;
+            color: white;
+            outline: none;
+            cursor: pointer;
+            border: none;
+            border-radius: 3px;
+            text-transform: uppercase;
+            width: max-content;
+        }
+
+        #download {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translate(-50%, 0);
+        }
+
+        #output::before {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            content: 'Created By Rishabh';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translate(-50%, 0);
+            width: max-content;
+            padding: 10px;
+            background: black;
+            color: white;
+            border-bottom-left-radius: 10px;
+            border-bottom-right-radius: 10px;
+        }
+
+        select {
+            padding: 10px 15px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1>Custom Qr Code Generator</h1>
+    </header>
+
+    <div id="output">
+        <div class="same--line">
+            <div class="inp_field">
+                <div class="lab">
+                    <label for="link">Insert the Link.</label>
+                    <input type="text" placeholder="Enter the Link.." id="qrLink" />
+                </div>
+                <div class="lab">
+                    <label for="image">Choose Image</label>
+                    <input type="file" accept="image/*" id="qrImage" />
+                </div>
+                <div class="lab">
+                    <label for="style">Choose Style : </label>
+                    <select>
+                        <option value="dots">dots</option>
+                        <option value="Square">Square</option>
+                    </select>
+                </div>
+                <button onclick="genQr()">Generate</button>
+            </div>
+            <div id="canvas"></div>
+        </div>
+        <button id="download" onclick="donwload()">download</button>
+    </div>
+    </div>
+
+    <script type="text/javascript" src="https://unpkg.com/qr-code-styling@1.5.0/lib/qr-code-styling.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.0.0-rc.5/dist/html2canvas.min.js"></script>
+
+    <script>
+        const qrCode = new QRCodeStyling({
+            width: 300,
+            height: 300,
+            type: "svg",
+            data: "https://www.facebook.com/",
+            image: "https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg",
+            dotsOptions: {
+                color: "#000",
+                type: "dots"
+            },
+            // backgroundOptions: {
+            //     color: "#e9ebee",
+            // },
+            cornersSquareOptions: { "type": "extra-rounded", "color": "#000000" },
+            cornersDotOptions: { "type": "Square", "color": "#000000" },
+            imageOptions: {
+                crossOrigin: "anonymous",
+                imageSize: 0.4,
+            }
+        });
+
+        function genQr() {
+            let qrLink = document.getElementById('qrLink');
+            let qrImage = document.getElementById('qrImage');
+            let select = document.querySelector('select');
+            // console.log(select.value)
+            newQrImage = URL.createObjectURL(qrImage.files[0]);
+            qrCode.update({
+                data: qrLink.value,
+                image: newQrImage,
+                dotsOptions: {
+                    color: "#000",
+                    type: select.value
+                },
+            });
+        }
+
+        qrCode.append(document.getElementById("canvas"));
+        function donwload() {
+            qrCode.download({ name: "qr", extension: "png" });
+        }
+
+    </script>
+</body>
+
+</html>
